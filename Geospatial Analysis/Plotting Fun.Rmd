@@ -1,0 +1,197 @@
+---
+title: "Plotting Cinema, Macdonalds and Tea locations"
+output: github_document
+---
+## Intro
+
+Fun afternoon analysis I did to satisfy my curiosity. I wanted to find which GV cinema had a Macdonalds or a Koi bubble tea store nearby. Knowing which cinema to head to on a Sat/Sun afternoon is a an important question. Especially if I get chicken nugget or milk tea cravings.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+work_directory = getwd()
+
+#specify the packages of interest
+packages = c("tidyverse","ggmap","readxl","geosphere")
+
+#use this function to check if each package is on the local machine
+#if a package is installed, it will be loaded
+#if any are not, the missing package(s) will be installed and loaded
+package.check <- lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+        install.packages(x, dependencies = TRUE, repos = 'http://cran.us.r-project.org')
+        library(x, character.only = TRUE)
+    }
+})
+
+search()
+
+```
+
+## Reading in Data
+
+Data was taken from
+
+https://www.gv.com.sg/GVCinemas
+
+https://www.mcdonalds.com.sg/locate-us/
+
+https://www.koithe.com/en/global/koi-singapore
+
+I did a bit of cleaning in word since I copy-pasted the data directly from the websites which turned out to be a bit more trouble than expected. I would have used a web scraper but I had no idea (and did not want to deal with) the legal implications, so I stuck to the safer method.
+
+In any case everything was put into a nice excel file 
+
+
+```{r echo=TRUE}
+
+#excel_sheets(path = 'locations to plot.xlsx')
+
+# reading data for macdonalds locations
+basedata_mac = read_excel('locations to plot.xlsx', sheet = 'Macdonalds') %>% 
+  mutate(postcode = str_extract(Address, '[sS]ingapore \\d{6}$')) %>% filter(!is.na(postcode))
+# checking if any row doesnt have postcode in the standard format 
+# test = basedata_mac[-grep('[sS]ingapore \\d{6}$',basedata_mac$postcode),]
+
+
+# reading data for gv locations
+basedata_gv = read_excel('locations to plot.xlsx', sheet = 'GV') %>%
+  mutate(postcode = str_extract(Address, '[sS]ingapore \\d{6}$')) %>% filter(!is.na(postcode))
+  
+
+# reading data for koi locations
+basedata_koi = read_excel('locations to plot.xlsx', sheet = 'Koi') %>%
+  mutate(postcode = str_extract(Address, '[sS]ingapore \\d{6}|[sS]\\(\\d{6}\\)'),
+         postcode = str_replace(postcode, '[sS]\\((\\d{6})\\)', 'Singapore \\1')) %>% filter(!is.na(postcode))
+# checking if any row doesnt have postcode in the standard format
+#test = basedata_koi[-grep('[sS]ingapore \\d{6}$',basedata_koi$postcode),]
+
+
+as.tibble(basedata_gv)
+as.tibble(basedata_koi)
+as.tibble(basedata_mac)
+```
+
+## Getting the latitude and longitude for the addresses
+
+I used geocode() from ggmap to get the latitudes and longitudes. I found that using google as a source had a random over query limit error despite not being at the limit so I had to rewrite the code to keep trying until it got a result.
+Based on past experience using the Data Science Toolkit source was not as accurate.
+
+After getting the results I had to do some error corrections as 1 of the outputs was incorrect. 
+
+I have already included a RData file with lat and lon data already run beforehand
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
+
+if (any(grepl('savedata.RData',list.files()))) {
+  
+  load('savedata.RData')
+  
+} else {
+inputlist = list(macdonalds = basedata_mac, gv = basedata_gv, koi = basedata_koi) 
+
+plotdata = map(inputlist, function(i) {
+
+d = i$Address
+
+out = map(d, function(i) {
+  gcd = geocode(i, output = 'latlona', source = 'google')
+
+  while (all(is.na(gcd))) {
+    gcd = geocode(i, output = 'latlona', source = 'google')
+  }
+  data.frame(input_postcode = i, lon = gcd$lon, lat = gcd$lat)
+  })
+
+postcode_lonlat = reduce(out, rbind)    
+data.frame(address = i$Address,postcode_lonlat)      
+      
+})
+
+# making specific changes to correct errors
+# note errors were identified in hindsight
+error_1 = geocode(basedata_gv$postcode[5], output = 'latlona', source = 'google')
+while (all(is.na(error_1))) {
+    error_1 = geocode(basedata_gv$postcode[5], output = 'latlona', source = 'google')
+  }
+plotdata[['gv']][5,'lon'] = error_1$lon
+plotdata[['gv']][5,'lat'] = error_1$lat
+
+# saving data for future use 
+save.image('savedata.RData')
+}
+
+str(plotdata)
+
+```
+
+## Data Plots
+
+Awesome. Looks like I am spoiled for choice almost all the GV locations seem to have at least a Koi or a Macdonalds nearby. 
+
+```{r echo=TRUE, warning=FALSE}
+if (any(grepl('map',ls())) == FALSE) {
+map <- get_map(location = 'Singapore', zoom = 11, color = 'bw')
+
+while (is.na(map)) {
+    map <- get_map(location = 'Singapore', zoom = 11, color = 'bw')
+  }
+}
+
+ggmap(map) + 
+  geom_point(data = plotdata$gv, aes(x =lon, y=lat, colour = 'green', size = 0.1)) +
+  geom_point(data = plotdata$macdonalds, aes(x =lon, y= lat, colour = 'blue')) +
+  geom_point(data = plotdata$koi, aes(x =lon, y=lat, colour = 'red')) +
+  scale_size_continuous(guide = 'none') +
+  scale_colour_manual(name = 'colour legend', 
+         values =c('blue'='blue','green'='green', 'red'='red'), labels = c('Macdonalds','GV','Koi')) +
+  labs( title = 'You Hungry For A Movie ?')
+```
+
+## Distance Analysis
+
+Taking it a little further I looked at which cinema locations offered the closest Koi or Macdonalds.
+I used the haversine formula to estimate distance which offers a decent comparative guage. Finally since I usually am more likely to get Koi cravings (about 75% of the time) than I am Macdonalds and rarely have the 2 at the same time, I calculated my expected walking distance in meters.
+
+```{r echo=TRUE, warning=FALSE}
+
+interim_data = map(plotdata, function(i){
+  
+  i %>% mutate(index = 'info') %>% select(-input_postcode)
+
+})
+
+
+
+gv_koi = interim_data[['gv']] %>% left_join(interim_data[['koi']], by = c('index')) %>% select(-index) %>%
+  rowwise () %>% 
+  mutate(distance = round(distHaversine(c(lon.x,lat.x),c(lon.y,lat.y)),2)) %>% group_by(address.x) %>%
+  filter(distance == min(distance)) %>% ungroup() %>% 
+  rename_at(vars(contains('.x')), funs(sub('.x', '_gv', .))) %>%
+  rename_at(vars(contains('.y')), funs(sub('.y', '_koi', .))) %>%
+  rename(distance_koi = distance) %>%
+  select(address_gv, address_koi, distance_koi)
+
+
+gv_mac = interim_data[['gv']] %>% left_join(interim_data[['macdonalds']], by = c('index')) %>% select(-index) %>%
+  rowwise () %>% 
+  mutate(distance = round(distHaversine(c(lon.x,lat.x),c(lon.y,lat.y)),2)) %>% group_by(address.x) %>%
+  filter(distance == min(distance)) %>% ungroup() %>% 
+  rename_at(vars(contains('.x')), funs(sub('.x', '_gv', .))) %>%
+  rename_at(vars(contains('.y')), funs(sub('.y', '_mac', .))) %>%
+  rename(distance_mac = distance) %>%
+  select(address_gv, address_mac, distance_mac)
+
+
+output = gv_koi %>% left_join(gv_mac, by = c('address_gv')) %>%
+  select(address_gv, distance_koi, distance_mac) %>%
+  mutate(expected_walking_distance = distance_koi*.75 + distance_mac*.25) %>%
+  arrange(expected_walking_distance)
+
+as.tibble(output)
+```
+
+
+## Conclusion
+
+Yup and the results confirm my suspicious. The GV Tampines Mall offers one of the best trade offs. But there are also other good options such as Yishun Central and City Square Mall. I live in the East side of Singapore, so Tampines Mall is the natural choice.
