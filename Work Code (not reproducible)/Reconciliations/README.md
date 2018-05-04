@@ -1,6 +1,6 @@
 # Data Reconciliation Tool
 
-Our company had consistent data quality issues that were not addressed in a timely matter. Often this compromised various analysis done and models built.
+Our company had consistent data quality issues that were not addressed in a timely manner. Often this compromised various analysis done and models built.
   
 The purpose of this tool was to ensure our data quality issues were easily identified and addressed in a regular manner. In particular, to ensure that the data is complete, consistent, accurate, unique, timely and valid.
 
