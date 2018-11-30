@@ -1,0 +1,321 @@
+---
+title: "Plotting Milk Tea, GV-Cinema and Macdonalds locations"
+author: "JD"
+output:
+  html_document:
+    theme: cerulean
+    code_folding: show
+    toc: true
+    toc_depth: 4
+---
+
+<style type="text/css">
+.main-container{
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+body, td{
+  font-family: Helvetica;
+  font-size: 16pt;
+}
+pre{ 
+  font-size: 14px; 
+}
+pre.r{ 
+  font-size: 14px;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(digits=15)
+work_directory = getwd()
+
+# specify the packages of interest
+packages = c("tidyverse","readxl","geosphere","rvest","pander","knitr","jsonlite","kableExtra")
+
+
+# use this function to check if each package is on the local machine
+# if a package is installed, it will be loaded
+# if any are not, the missing package(s) will be installed and loaded
+package.check <- lapply(packages, FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+        install.packages(x, dependencies = TRUE, repos = 'http://cran.us.r-project.org')
+        library(x, character.only = TRUE)
+    }
+})
+
+# installs ggmap directly from github source. NO NOT use cran version
+if(!requireNamespace("devtools")) install.packages("devtools")
+devtools::install_github("dkahle/ggmap", ref = "tidyup")
+library(ggmap)
+
+search()
+```
+
+<br/>
+
+**References**  
+*put all reference links here*
+
+***
+<br />
+
+## Getting the Data 
+
+We first create our index which holds the relevant locations and the urls we plan on scraping.
+
+```{r}
+# reading required variables 
+# either have a valid google api key for geocoding api or have "lat_long_data.csv" in your working directory
+creds = read_json(paste(path.expand('~'),'/creds.json', sep = ''))
+google_apikey = creds$Google_api$geocode_api
+register_google(key = google_apikey)
+
+rm(creds)
+
+
+# setting the reference index
+locations <- c("Liho", "Koi", "GV Cinema", "McDonalds", "Gong cha")
+urls <- c("https://www.streetdirectory.com/businessfinder/company_branch/163304/5890/",
+          "https://www.streetdirectory.com/businessfinder/company_branch/109085/168981/",
+          "https://www.streetdirectory.com/businessfinder/company_branch/36232/30314/",
+          "https://www.streetdirectory.com/businessfinder/company_branch/65869/254129/",
+          "https://www.gong-cha-sg.com/stores/")
+          
+index <- data.frame(locations, urls, stringsAsFactors = FALSE) 
+kable(index) %>% kable_styling()
+```
+
+<br />
+
+We then define the relevant functions we plan on using to get the data needed. Note the created function already alters the output into the format that we want. 
+
+```{r}
+# function used to scrape data 
+getting_data <- function(url_link, css_selector) {
+  url_link %>%
+    read_html() %>%
+    html_nodes(css_selector) %>%
+    html_text() %>%
+    str_replace_all(.,"\\r|\\n","") %>%
+    str_trim() %>%
+    str_replace_all(.,"  ","")
+}
+
+
+# reading data for Liho, Koi, GV Cinema and McDonalds
+basedata <-
+  map(seq_along(index$urls[1:4]), function(x) {
+    data.frame(name = getting_data(index$urls[x], ".company_branch_name"),
+               address = getting_data(index$urls[x], ".company_branch_address"),
+               postcode = str_extract(getting_data(index$urls[x], ".company_branch_address"), "[0-9]{6}$"),
+               indicator = index$locations[x], 
+               stringsAsFactors = FALSE)
+    }) %>%
+  setNames(index$locations[1:4])
+
+
+# reading Gong cha data
+# this is different as the Gong cha website loads using javascript
+# I found no elegant way to read the data directly from R so defaulted to the easiest method
+if(!file.exists("gong_cha.html")) {
+warning("You need to save http://www.gong-cha-sg.com/stores/ into working directory as 'gong_cha.html'")
+  
+  } else {
+    gong_cha_data <-
+      data.frame(name = getting_data("gong_cha.html", ".p-title"),
+                 address = getting_data("gong_cha.html", ".p-area"),
+                 postcode = str_extract(getting_data("gong_cha.html", ".p-area"), "[0-9]{6}$"),
+                 indicator = index$locations[5],
+                 stringsAsFactors = FALSE)
+    
+    basedata$`Gong cha` <- gong_cha_data
+}
+
+location_data <-
+  bind_rows(basedata)
+
+
+# check if there are any rows with postalcode not equal to 6 digits
+location_data %>% mutate(count_postal = nchar(postcode)) %>% filter(count_postal != 6)
+
+
+# table output 
+kable(location_data %>% group_by(indicator) %>% slice(1:3)) %>% kable_styling()
+```
+
+<br />
+
+We next use the google maps geocode api [Google maps gecoding intro](https://developers.google.com/maps/documentation/geocoding/intro) to get the relevant latitudes and longitudes. To do this you need to have a valid api key. If you do not have one, fret not. I have already pre-saved the geocode information before hand. Just make sure you have the reference csv "lat_long_data_with_errors" in your working enviroment. 
+
+
+```{r}
+# function used to call the api
+calling_google_geocode <- function(postcode, apikey) {
+
+  output <-
+    "https://maps.googleapis.com/maps/api/geocode/json?address=Singapore+xxpostcodexx&key=xxapikeyxx" %>%
+    str_replace_all(c('xxpostcodexx' = postcode, 'xxapikeyxx' = apikey)) %>%
+    fromJSON()
+  
+  
+  if(length(output) == 0) return(data.frame())
+  return(output$results$geometry$location)
+}
+
+
+# getting latitudes and longitudes
+if(!file.exists("lat_long_data_with_errors.csv")) {
+  
+  lat_long_data <-
+  location_data %>%
+  .$postcode %>%
+  map(., function(i) {
+    output_api <- calling_google_geocode(postcode = i, apikey = google_apikey)
+    return(data.frame(postcode_used = i, output_api, stringsAsFactors = FALSE))
+    
+  }) %>%
+  bind_rows() %>%
+  bind_cols(location_data, .)
+  
+  # saving data cause I am cheap and google apis can actually charge you now
+  lat_long_data %>% write_csv("lat_long_data_with_errors.csv")
+  
+  } else {
+  
+  lat_long_data <- read_csv("lat_long_data_with_errors.csv")
+  
+  }
+
+
+# table output 
+kable(lat_long_data %>% select(-postcode_used) %>% group_by(indicator) %>% slice(1:3)) %>% kable_styling()
+```
+
+***
+<br />
+
+## Visualising the Data 
+
+Now we get a static map of singapore and then plot the latitude and longitude points onto the map. Unfortunately an error has occured. Can you spot it ?
+
+```{r, fig.width = 14, fig.height = 9, out.width = "2000", out.height = "500"}
+
+if(!file.exists("singapore_map.rds")) {
+  
+  map_singapore <- 
+    get_map(location = 'Singapore', zoom = 12, color = 'bw')
+  
+  saveRDS(map_singapore, file = "singapore_map.rds")
+  } else {
+  
+  map_singapore <- readRDS("singapore_map.rds")
+  }
+
+# plotting 
+ggmap(map_singapore, extent = "device") +
+  geom_point(data = lat_long_data, aes(x = lng, y = lat, colour = indicator), size = 2, position = position_jitter(w = 0.002, h = 0.002)) +
+  scale_color_manual(breaks = c("Gong cha", "GV Cinema", "Koi", "Liho", "McDonalds"),
+                        values=c("darkred", "darkgreen", "darkblue", "darkgoldenrod4", "pink2")) +
+  geom_point(aes(x = 103.844185, y = 1.387563), shape = 18, size = 4, colour = 'red') +
+  annotate("text", x = 103.844185, y = 1.39, label = 'bold("NCS Hub")', size = 3.5, parse = TRUE)
+```
+
+<br />
+
+For some reason, google's geocode api cannot get the latitude and longitude values for these postcodes and defaults to the value for the city of Singapore, which happens to be in MacRitchie <span style = "color:Maroon">***(that cluster of points in the middle of the map)***</span>. Below are the values that were geocoded wrongly. You can try imputting the postcodes into google maps directly and see if you get anything.
+
+```{r}
+# filtering out the errors from the google api
+lat_long_data %>% 
+  filter(lat == 1.3520830,lng == 103.8198360) %>% 
+  kable() %>%
+  kable_styling() %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+  
+```
+
+***
+<br />
+
+## Correcting Errors
+
+Thankfully, the google api is clever enough to guess the latitude and longitude values from the address string. Unfortunately, the api call function we created doesnt accomodate such strings. No worry, `geocode()` comes to the rescue.  
+
+
+```{r}
+
+wrong_data <-
+  lat_long_data %>% 
+  filter(lat == 1.3520830,lng == 103.8198360) %>%
+  select(-lat,-lng)
+
+
+if(!file.exists("correcting_error.rds")) {
+  correcting_error <-
+    wrong_data %>%
+    .$address %>%
+    map(function(i) {
+      
+      gcd = geocode(i, output = "latlon", source = "google")
+      }) %>%
+    bind_rows() %>%
+    select(lat, 'lng' = lon) %>%
+    bind_cols(wrong_data, .)
+  
+  saveRDS(correcting_error, file = "correcting_error.rds")
+  } else {
+  
+  correcting_error <- readRDS("correcting_error.rds")
+  
+  }
+
+kable(correcting_error) %>%
+  kable_styling() %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
+```
+
+***
+<br />
+
+## Distance analysis 
+
+We then look into which tea shop, cinema or macdonalds is closest to the office. We used the haversine formula from the geosphere package to estimate direct line distance which offers a decent comparative guage. We also use the actual function `geocode()` which automatically formats address strings for the google api.
+
+The top 3 results by distance for each outlet does not surprise us. 
+
+```{r echo=TRUE}
+
+ncs_hub <-
+  data.frame(lat = 1.387563, lng = 103.844185)
+
+
+distance_data <-
+  lat_long_data %>% 
+  filter(lat != 1.3520830,lng != 103.8198360) %>%
+  bind_rows(., correcting_error) %>%
+  rowwise() %>%
+  mutate(distance = round(distHaversine(c(lng,lat), c(ncs_hub$lng,ncs_hub$lat)),2))
+
+write_csv(distance_data, "lat_long_data_correct.csv")
+
+distance_data %>%
+  group_by(indicator) %>% 
+  arrange(distance) %>% 
+  slice(1:3) %>% 
+  kable() %>%
+  kable_styling()
+```
+
+***
+<br />
+
+## Conclusion
+
+Geospatial stuff is fun. This is merely the beginning. If you liked my work go to my [github page] https://github.com/jaredgoh/Project-Work for more guides. Its a young repo, but it will grow !
+
+***
+<br />
+

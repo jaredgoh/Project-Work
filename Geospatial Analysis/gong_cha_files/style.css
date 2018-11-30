@@ -1,0 +1,96 @@
+/*
+Theme Name: Gong Cha
+Theme URI: http://www.verzdesign.com/
+Author:  Amreen 
+Version: 9.1
+Description : Nov 2017
+*/
+img.alignright {
+	padding: 4px;
+	margin: 5px 0 20px 20px;
+	display: inline;
+}
+.alignright {
+	float: right;
+}
+.aligncenter,
+div.aligncenter {
+    display: block;
+    margin: 5px auto 5px auto;
+}
+img.alignleft {
+	padding: 4px;
+	margin: 5px 20px 20px 0px;
+	display: inline;
+}
+.alignleft {
+	float: left;
+}
+
+div.wpcf7-validation-errors {
+	clear:both;
+}
+div.wpcf7-mail-sent-ok {
+	clear:both;
+}
+.wpcf7-form label.error {
+	float:right !important;
+}
+.wpcf7-response-output {
+	clear:both;
+}
+.wpcf7-form input.error, .wpcf7-form select.error, .wpcf7-form textarea.error {
+	border-bottom:2px solid #990000 !important
+}
+.wpcf7-form label.error {
+	margin-top: -20px;
+	text-align: right;
+	width: 100%;
+}
+/*span.wpcf7-list-item{ margin-left:0px !important;}
+span .wpcf7-not-valid-tip{ left:-240px !important; top:125% !important; width:225px !important;}*/
+
+.top-nav li.current-menu-item > a, 
+.top-nav li.current-menu-ancestor > a, 
+.top-nav li.current_page_item > a, 
+.top-nav li.current_page_ancestor > a, .top-nav li.current-page-ancestor > a {
+  color: #ADD137 !important;
+}
+
+#main_nav li.current-menu-item > a, 
+#main_nav li.current-menu-ancestor > a{
+    -moz-transition: all 0.3s ease-out 0s;
+    border-bottom: 4px solid #898468;
+    color: #898468;
+}
+#menuchild ul { display:none;}
+#menuchild li.current_page_item > ul , #menuchild li.current_page_ancestor > ul  , #menuchild li.current_page_parent > ul { display:block !important;}
+#menuchild li.current_page_item > a, 
+#menuchild li.current_page_ancestor > a, #menuchild li.current-page-ancestor > a {     color: #D71F3B;
+    text-decoration: underline;}
+#menuchild li.current-menu-item > a,
+#menuchild li.current-menu-ancestor > a, 
+#menuchild li.current_page_item > a, 
+#menuchild li.current_page_ancestor > a, #menuchild li.current-page-ancestor > a {     color: #D71F3B;}
+
+
+.menu ul li.current-menu-item > a, 
+.menu ul li.current_page_item > a {
+   
+}
+
+#sidenav ul { display:none;}
+#sidenav li.current_page_item ul , #sidenav li.current_page_ancestor ul{ display:block;}
+
+	#menu_footer ul { display:none !important;}
+.menu .sub-menu strong { font-weight:normal !important;}
+#sideNav li.current_page_item > ul { display:block;}
+#sideNav li.current_page_ancestor > ul { display:block;}
+.input_small { width:250px !important;}
+.main_country {}
+#map_canvas img { max-width:none !important;}
+span.wpcf7-list-item { display:block; width:47%; margin-bottom:5px;}
+.contact_from p { margin-bottom:0px;margin-top:0px !important;}
+.check_from td { padding-bottom:30px; display:inline;}
+.foot-nav span { display:none;}
+.paddingtopzero { padding-top:0px !important;}
