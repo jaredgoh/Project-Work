@@ -487,7 +487,7 @@ if(!file.exists("singapore_map.rds")) {
 ggmap(map_singapore, extent = "device") +
   geom_point(data = lat_long_data, aes(x = lng, y = lat, colour = indicator), size = 2, position = position_jitter(w = 0.002, h = 0.002)) +
   scale_color_manual(breaks = c("Gong cha", "GV Cinema", "Koi", "Liho", "McDonalds"),
-                        values=c("darkred", "darkgreen", "darkblue", "darkgoldenrod4", "pink2")) +
+                        values=c("darkred", "darkgreen", "darkblue", "darkgoldenrod4", "tomato")) +
   geom_point(aes(x = 103.844185, y = 1.387563), shape = 18, size = 4, colour = 'red') +
   annotate("text", x = 103.844185, y = 1.39, label = 'bold("NCS Hub")', size = 3.5, parse = TRUE)
 ```
@@ -505,7 +505,7 @@ lat_long_data %>%
   filter(lat == 1.3520830,lng == 103.8198360) %>% 
   kable() %>%
   kable_styling() %>%
-  kableExtra::scroll_box(width = "100%", height = "400px")
+  scroll_box(width = "100%", height = "400px")
 ```
 
 <div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
@@ -777,7 +777,7 @@ if(!file.exists("correcting_error.rds")) {
 
 kable(correcting_error) %>%
   kable_styling() %>%
-  kableExtra::scroll_box(width = "100%", height = "400px")
+  scroll_box(width = "100%", height = "400px")
 ```
 
 <div style="border: 1px solid #ddd; padding: 5px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
@@ -1044,7 +1044,7 @@ A quick replot of the corrected data shows the errors have been fixed.
 ggmap(map_singapore, extent = "device") +
   geom_point(data = distance_data, aes(x = lng, y = lat, colour = indicator), size = 2, position = position_jitter(w = 0.002, h = 0.002)) +
   scale_color_manual(breaks = c("Gong cha", "GV Cinema", "Koi", "Liho", "McDonalds"),
-                        values=c("darkred", "darkgreen", "darkblue", "darkgoldenrod4", "pink2")) +
+                        values=c("darkred", "darkgreen", "darkblue", "darkgoldenrod4", "tomato")) +
   geom_point(aes(x = 103.844185, y = 1.387563), shape = 18, size = 4, colour = 'red') +
   annotate("text", x = 103.844185, y = 1.39, label = 'bold("NCS Hub")', size = 3.5, parse = TRUE)
 ```
