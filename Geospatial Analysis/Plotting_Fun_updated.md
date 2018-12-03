@@ -32,7 +32,8 @@ pre.r{
 
 <br/>
 
-**References**    
+**References**
+
 * https://github.com/jaredgoh/Project-Work/tree/master/.mini%20guides/Web%20Scraping
 
 ***
