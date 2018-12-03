@@ -177,7 +177,7 @@ download.file(poster[1], destfile = save_file, method='curl')
 }
 ```
 
-![If you don't think this is cool, I can't help you.](C:/Users/P1320279/Desktop/Git Folder/R-secrets/.Notes section/Web Scraping/images/poster.jpg)
+![If you don't think this is cool, I can't help you.](images/poster.jpg)
 
 ***
 <br />
@@ -227,28 +227,95 @@ job_summary <-
 
 # formatting output
 output <- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output)
+kable(output) %>% kable_styling()
 ```
 
-
-
-title                                                               company                                         summary                                                                                                                                                          
-------------------------------------------------------------------  ----------------------------------------------  -----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Data Scientist (Cyber Security)                                     Singapore Telecommunications Limited            We are looking for a creative data scientist to join our project team that builds robust cyber security software and services. The candidate will be...          
-Associate Data Scientist                                            CrimsonLogic Pte Ltd - Global eTrade Services   The Data Scientist shall work with the product manager to propose & implement the data analytics, ML & AI use cases in the product. Key Accountabilities The...  
-Data Scientist/Engineer (MNC / Annual Package of $180K / Central)   Search Index Pte Ltd                            Including attractive bonuses, annual package up to $180K Location: Central 5-day work week To apply, please click the APPLY NOW button or email your detailed... 
-Junior Data Scientist (CLT) Job                                     MSD                                             We are seeking energetic, forward-thinking professionals to join our Information Technology hub in Singapore. As part of that team, you will join the...         
-Junior Data Scientist                                               THE ADVERTISER                                  As a CLT data scientist, you will be attached to one of our two data science teams – Decision Sciences and AI Products. You will be provided a holistic...       
-Data Scientist                                                      Biofourmis Singapore                            You will be assisting the Data Scientist Team to: * Perform required bio-signal processing based on the instructions from data scientists. * Evaluate the...     
-Data Scientist                                                      Capgemini Singapore Pte Ltd                     Explore and analyse complex data sets to formulate models Implement complex KPIs for various business domains Work with super users to implement complex...      
-Data Scientist (Junior)                                             IT Consulting Solutions Singapore Pte. Ltd.     Scope and build proof-of-concepts / prototypes using data science techniques directly Conceive, develop, and test algorithms with tools like R, Python,...       
-Data Scientist - Financial Services                                 -                                               With this comes an exciting opportunity for inspiring individuals to join the high performing data scientist team. The team works alongside with specific...     
-Data Scientist - Fashion Company                                    RegionUP                                        If you are driven and seek advancement in your career within data analysis, this Data Scientist role will be a good fit for you. [Country]...                    
-Data Scientist                                                      Macdonald & Company                             We are partnering with one of Singapore’s largest financial institutions, looking for a Data Scientist to support our expanding Advanced Analytics team. The...  
-Data Scientist                                                      Lomotif                                         Lomotif is expanding quickly and is looking for an innovative data scientist who is passionate about solving real-world problems. If you think you fit the...    
-Data Scientist                                                      -                                               Our client is one of the well established MNCs in Asia with specialisation in Big Data and Data Analytic in the financial sector. It has a strong regional...    
-Scientist (Data Analytics) / I2R -18/I2R/0107                       Institute for Infocomm Research                 We are looking for highly-motivated and skilled data scientist to work on a new initiative on developing advanced automatic data pre-processing techniques...    
-Data Scientist I - (216924)                                         Jabil Inc.                                      Jabil is building a Data Scientist Team. We are looking for junior data scientist who will support the Lead Data Scientist to deliver a wide range of data...    
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> title </th>
+   <th style="text-align:left;"> company </th>
+   <th style="text-align:left;"> summary </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Data Scientist (Cyber Security) </td>
+   <td style="text-align:left;"> Singapore Telecommunications Limited </td>
+   <td style="text-align:left;"> We are looking for a creative data scientist to join our project team that builds robust cyber security software and services. The candidate will be... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Associate Data Scientist </td>
+   <td style="text-align:left;"> CrimsonLogic Pte Ltd - Global eTrade Services </td>
+   <td style="text-align:left;"> The Data Scientist shall work with the product manager to propose &amp; implement the data analytics, ML &amp; AI use cases in the product. Key Accountabilities The... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist/Engineer (MNC / Annual Package of $180K / Central) </td>
+   <td style="text-align:left;"> Search Index Pte Ltd </td>
+   <td style="text-align:left;"> Including attractive bonuses, annual package up to $180K Location: Central 5-day work week To apply, please click the APPLY NOW button or email your detailed... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Junior Data Scientist (CLT) Job </td>
+   <td style="text-align:left;"> MSD </td>
+   <td style="text-align:left;"> We are seeking energetic, forward-thinking professionals to join our Information Technology hub in Singapore. As part of that team, you will join the... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Junior Data Scientist </td>
+   <td style="text-align:left;"> THE ADVERTISER </td>
+   <td style="text-align:left;"> As a CLT data scientist, you will be attached to one of our two data science teams – Decision Sciences and AI Products. You will be provided a holistic... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> Biofourmis Singapore </td>
+   <td style="text-align:left;"> You will be assisting the Data Scientist Team to: * Perform required bio-signal processing based on the instructions from data scientists. * Evaluate the... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> Capgemini Singapore Pte Ltd </td>
+   <td style="text-align:left;"> Explore and analyse complex data sets to formulate models Implement complex KPIs for various business domains Work with super users to implement complex... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist (Junior) </td>
+   <td style="text-align:left;"> IT Consulting Solutions Singapore Pte. Ltd. </td>
+   <td style="text-align:left;"> Scope and build proof-of-concepts / prototypes using data science techniques directly Conceive, develop, and test algorithms with tools like R, Python,... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist - Financial Services </td>
+   <td style="text-align:left;"> - </td>
+   <td style="text-align:left;"> With this comes an exciting opportunity for inspiring individuals to join the high performing data scientist team. The team works alongside with specific... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist - Fashion Company </td>
+   <td style="text-align:left;"> RegionUP </td>
+   <td style="text-align:left;"> If you are driven and seek advancement in your career within data analysis, this Data Scientist role will be a good fit for you. [Country]... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> Macdonald &amp; Company </td>
+   <td style="text-align:left;"> We are partnering with one of Singapore’s largest financial institutions, looking for a Data Scientist to support our expanding Advanced Analytics team. The... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> Lomotif </td>
+   <td style="text-align:left;"> Lomotif is expanding quickly and is looking for an innovative data scientist who is passionate about solving real-world problems. If you think you fit the... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> - </td>
+   <td style="text-align:left;"> Our client is one of the well established MNCs in Asia with specialisation in Big Data and Data Analytic in the financial sector. It has a strong regional... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scientist (Data Analytics) / I2R -18/I2R/0107 </td>
+   <td style="text-align:left;"> Institute for Infocomm Research </td>
+   <td style="text-align:left;"> We are looking for highly-motivated and skilled data scientist to work on a new initiative on developing advanced automatic data pre-processing techniques... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist I - (216924) </td>
+   <td style="text-align:left;"> Jabil Inc. </td>
+   <td style="text-align:left;"> Jabil is building a Data Scientist Team. We are looking for junior data scientist who will support the Lead Data Scientist to deliver a wide range of data... </td>
+  </tr>
+</tbody>
+</table>
 
 <br />
 
@@ -268,7 +335,7 @@ job_pg2 <-
 ```
 
 ```
-## Navigating to /j?l=singapore&p=2&q=data+scientist&sp=homepage&surl=0&tk=p6YeY5WnwXUArPkBk3Cd-evxDf96H5MGX67LeDO6i
+## Navigating to /j?l=singapore&p=2&q=data+scientist&sp=homepage&surl=0&tk=LrR3CqqT1cRkzQSpCmKq-G8w6SFCha8tkgP7jV6rL
 ```
 
 ```r
@@ -293,28 +360,95 @@ job_summary <-
 
 # formatting output
 output <- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output)
+kable(output) %>% kable_styling()
 ```
 
-
-
-title                                                    company                               summary                                                                                                                                                          
--------------------------------------------------------  ------------------------------------  -----------------------------------------------------------------------------------------------------------------------------------------------------------------
-Data Scientist                                           Kaishi Partners                       Kaishi Partners (16C8316) is working in partnership with a leading Data Technology Firm in Asia to seek a talented Data Scientist in the field of Natural...     
-Data Scientist                                           Michael Page                          An exciting opportunity to join a Fortune 500 conglomerate as their Data Scientist. Client Details Our client is a Fortune 500 company with an excellent...      
-Data Scientist                                           Ministry of Home Affairs              We are seeking candidates who are interested in machine learning to join our analytics team. As a data scientist in MHA, you will be working with advanced...    
-Data Scientist                                           CAPGEMINI SINGAPORE PTE. LTD.         We are looking for Data Scientist for a project related to the BFSI domain. The Ideal candidate will be responsible for sourcing data, transform data,...        
-Data Scientist                                           -                                     H2I is looking for a data scientist to join our data scientist team in Singapore. As part of the team, you will help developing added value from public and...   
-Data Scientist                                           -                                     We are looking for a Data Scientist that will help us discover the information hidden in vast amounts of data through signal processing as well as data...       
-Data Scientist                                           THATZ International Pte Ltd           Are you the right person we are looking for as our team player to support our business growth? As part of our Next-Generation ICT Engagement and Consultancy...  
-Data Scientist (Salary open for discussion)              Recruitment Hub Asia                  Analyze raw data: assessing quality, cleansing, structuring for management review Identify what data is available and relevant for problem solving Design...     
-DATA SCIENTIST                                           RegionUP                              Post-graduate degrees and/or Bachelor’s Degree in Data Science, Computer Science, Management Information Systems, Engineering, Statistics, Mathematics or...     
-Data Scientist (start-up)                                Capita Pte Ltd - IT Perm              What are we looking for? • Solid practical experience with ETL, data processing and data analytics • Proficiency and hands-on experience in machine learning,... 
-Principal Data Scientist                                 -                                     Love buying and selling on Carousell? Then meet the team that handcrafts various parts of the mobile applications, website and backend systems in order to...    
-Data Scientist                                           IBM Manufacturing Solutions Pte Ltd   Minimum of 5 years of overall IT experience of which 2 years should be in data analytics , data modelling and data integration using SPSS. Experience in...      
-Scientist (Data Analytics) / I2R (A*STAR) -18/I2R/0044   Institute for Infocomm Research       We are looking for a capable and responsible scientist to work on a major big data R&D project on fraud risk prediction. Researchers with multi-disciplinary...  
-Scientist (Data Analytics) / I2R (A*STAR) -18/I2R/0045   Institute for Infocomm Research       We are looking for a capable and responsible scientist to work on a major big data R&D project on fraud risk prediction. Researchers with multi-disciplinary...  
-Data Scientist (Watson Analytic, Cognos, Bluemix)        OPUS IT Services Pte Ltd              Bachelor's degree or equivalent experience in quantitative field (Statistics, Mathematics, Computer Science, Engineering, Business Analytic etc.) 3 years of...  
+<table class="table" style="margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> title </th>
+   <th style="text-align:left;"> company </th>
+   <th style="text-align:left;"> summary </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> Kaishi Partners </td>
+   <td style="text-align:left;"> Kaishi Partners (16C8316) is working in partnership with a leading Data Technology Firm in Asia to seek a talented Data Scientist in the field of Natural... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> Michael Page </td>
+   <td style="text-align:left;"> An exciting opportunity to join a Fortune 500 conglomerate as their Data Scientist. Client Details Our client is a Fortune 500 company with an excellent... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> Ministry of Home Affairs </td>
+   <td style="text-align:left;"> We are seeking candidates who are interested in machine learning to join our analytics team. As a data scientist in MHA, you will be working with advanced... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> CAPGEMINI SINGAPORE PTE. LTD. </td>
+   <td style="text-align:left;"> We are looking for Data Scientist for a project related to the BFSI domain. The Ideal candidate will be responsible for sourcing data, transform data,... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> - </td>
+   <td style="text-align:left;"> H2I is looking for a data scientist to join our data scientist team in Singapore. As part of the team, you will help developing added value from public and... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> - </td>
+   <td style="text-align:left;"> We are looking for a Data Scientist that will help us discover the information hidden in vast amounts of data through signal processing as well as data... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> THATZ International Pte Ltd </td>
+   <td style="text-align:left;"> Are you the right person we are looking for as our team player to support our business growth? As part of our Next-Generation ICT Engagement and Consultancy... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist (Salary open for discussion) </td>
+   <td style="text-align:left;"> Recruitment Hub Asia </td>
+   <td style="text-align:left;"> Analyze raw data: assessing quality, cleansing, structuring for management review Identify what data is available and relevant for problem solving Design... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> DATA SCIENTIST </td>
+   <td style="text-align:left;"> RegionUP </td>
+   <td style="text-align:left;"> Post-graduate degrees and/or Bachelor’s Degree in Data Science, Computer Science, Management Information Systems, Engineering, Statistics, Mathematics or... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist (start-up) </td>
+   <td style="text-align:left;"> Capita Pte Ltd - IT Perm </td>
+   <td style="text-align:left;"> What are we looking for? • Solid practical experience with ETL, data processing and data analytics • Proficiency and hands-on experience in machine learning,... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Principal Data Scientist </td>
+   <td style="text-align:left;"> - </td>
+   <td style="text-align:left;"> Love buying and selling on Carousell? Then meet the team that handcrafts various parts of the mobile applications, website and backend systems in order to... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist </td>
+   <td style="text-align:left;"> IBM Manufacturing Solutions Pte Ltd </td>
+   <td style="text-align:left;"> Minimum of 5 years of overall IT experience of which 2 years should be in data analytics , data modelling and data integration using SPSS. Experience in... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scientist (Data Analytics) / I2R (A*STAR) -18/I2R/0044 </td>
+   <td style="text-align:left;"> Institute for Infocomm Research </td>
+   <td style="text-align:left;"> We are looking for a capable and responsible scientist to work on a major big data R&amp;D project on fraud risk prediction. Researchers with multi-disciplinary... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Scientist (Data Analytics) / I2R (A*STAR) -18/I2R/0045 </td>
+   <td style="text-align:left;"> Institute for Infocomm Research </td>
+   <td style="text-align:left;"> We are looking for a capable and responsible scientist to work on a major big data R&amp;D project on fraud risk prediction. Researchers with multi-disciplinary... </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Data Scientist (Watson Analytic, Cognos, Bluemix) </td>
+   <td style="text-align:left;"> OPUS IT Services Pte Ltd </td>
+   <td style="text-align:left;"> Bachelor's degree or equivalent experience in quantitative field (Statistics, Mathematics, Computer Science, Engineering, Business Analytic etc.) 3 years of... </td>
+  </tr>
+</tbody>
+</table>
 
 ***
 <br />
@@ -322,4 +456,7 @@ Data Scientist (Watson Analytic, Cognos, Bluemix)        OPUS IT Services Pte Lt
 ## Parting notes
 
 Rvest is just the beginning. There are many problems that occur when scraping websites and there are more comprehensive guides which detail them in the references.  
-I wrote this mainly to practise as I learned and to compile all the good notes other people have made into one location for my reference. 
+I wrote this mainly to practise as I learned and to compile all the good notes other people have made into one location for my reference.  
+
+***
+<br />

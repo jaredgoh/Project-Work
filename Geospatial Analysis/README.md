@@ -32,8 +32,9 @@ pre.r{
 
 <br/>
 
-**References**  
-*put all reference links here*
+**References**
+
+* https://github.com/jaredgoh/Project-Work/tree/master/.mini%20guides/Web%20Scraping
 
 ***
 <br />
@@ -1241,7 +1242,7 @@ distance_data %>%
 
 ## Conclusion
 
-Geospatial stuff is fun. This is merely the beginning. If you liked my work go to my [github page] https://github.com/jaredgoh/Project-Work for more guides. Its a young repo, but it will grow !
+Geospatial stuff is fun. This is merely the beginning. If you liked my work go to my [github page](https://github.com/jaredgoh/Project-Work) for more guides. Its a young repo, but it will grow !
 
 ***
 <br />
