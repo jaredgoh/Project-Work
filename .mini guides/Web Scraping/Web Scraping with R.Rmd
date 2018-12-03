@@ -33,6 +33,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(httr)
 library(rvest)
+library(kableExtra)
 
 ```
 
@@ -178,7 +179,7 @@ job_summary <-
 
 # formatting output
 output <- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output)
+knitr::kable(output) %>% kable_styling()
 ```
 
 <br />
@@ -217,7 +218,7 @@ job_summary <-
 
 # formatting output
 output <- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output)
+knitr::kable(output) %>% kable_styling()
 ```
 
 ***
@@ -226,4 +227,7 @@ knitr::kable(output)
 ## Parting notes
 
 Rvest is just the beginning. There are many problems that occur when scraping websites and there are more comprehensive guides which detail them in the references.  
-I wrote this mainly to practise as I learned and to compile all the good notes other people have made into one location for my reference. 
+I wrote this mainly to practise as I learned and to compile all the good notes other people have made into one location for my reference.  
+
+***
+<br />
