@@ -177,7 +177,7 @@ download.file(poster[1], destfile = save_file, method='curl')
 }
 ```
 
-![If you don't think this is cool, I can't help you.](images//poster.jpg)
+![If you don't think this is cool, I can't help you.](images/poster.jpg)
 
 ***
 <br />
@@ -227,7 +227,7 @@ job_summary <-
 
 # formatting output
 output <- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output) %>% kable_styling()
+kable(output) %>% kable_styling()
 ```
 
 <table class="table" style="margin-left: auto; margin-right: auto;">
@@ -335,7 +335,7 @@ job_pg2 <-
 ```
 
 ```
-## Navigating to /j?l=singapore&p=2&q=data+scientist&sp=homepage&surl=0&tk=nUY8OKY4T_xBxVGhixLU-AZ067J870ZXd9h_hhJPo
+## Navigating to /j?l=singapore&p=2&q=data+scientist&sp=homepage&surl=0&tk=LrR3CqqT1cRkzQSpCmKq-G8w6SFCha8tkgP7jV6rL
 ```
 
 ```r
@@ -360,7 +360,7 @@ job_summary <-
 
 # formatting output
 output <- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output) %>% kable_styling()
+kable(output) %>% kable_styling()
 ```
 
 <table class="table" style="margin-left: auto; margin-right: auto;">

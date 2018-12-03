@@ -315,7 +315,7 @@ job_summary &lt;-
 
 # formatting output
 output &lt;- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output) %&gt;% kable_styling()</code></pre>
+kable(output) %&gt;% kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -511,7 +511,7 @@ job_pg2 &lt;-
   open_session %&gt;%
   follow_link(&quot;Next&quot;) %&gt;%
   read_html()</code></pre>
-<pre><code>## Navigating to /j?l=singapore&amp;p=2&amp;q=data+scientist&amp;sp=homepage&amp;surl=0&amp;tk=nUY8OKY4T_xBxVGhixLU-AZ067J870ZXd9h_hhJPo</code></pre>
+<pre><code>## Navigating to /j?l=singapore&amp;p=2&amp;q=data+scientist&amp;sp=homepage&amp;surl=0&amp;tk=LrR3CqqT1cRkzQSpCmKq-G8w6SFCha8tkgP7jV6rL</code></pre>
 <pre class="r"><code># scraping interested info  
 job_title &lt;- 
   job_pg2 %&gt;%
@@ -533,7 +533,7 @@ job_summary &lt;-
 
 # formatting output
 output &lt;- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output) %&gt;% kable_styling()</code></pre>
+kable(output) %&gt;% kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>

@@ -34,6 +34,7 @@ library(tidyverse)
 library(httr)
 library(rvest)
 library(kableExtra)
+library(knitr)
 ```
 
 <br/>
@@ -129,7 +130,7 @@ download.file(poster[1], destfile = save_file, method='curl')
 }
 ```
 
-![If you don't think this is cool, I can't help you.](images//poster.jpg)
+![If you don't think this is cool, I can't help you.](images/poster.jpg)
 
 ***
 <br />
@@ -178,7 +179,7 @@ job_summary <-
 
 # formatting output
 output <- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output) %>% kable_styling()
+kable(output) %>% kable_styling()
 ```
 
 <br />
@@ -217,7 +218,7 @@ job_summary <-
 
 # formatting output
 output <- data.frame(title = job_title, company = job_company, summary = job_summary)
-knitr::kable(output) %>% kable_styling()
+kable(output) %>% kable_styling()
 ```
 
 ***
