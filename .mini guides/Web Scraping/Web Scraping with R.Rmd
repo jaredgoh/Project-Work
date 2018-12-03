@@ -130,7 +130,7 @@ download.file(poster[1], destfile = save_file, method='curl')
 }
 ```
 
-![If you don't think this is cool, I can't help you.](`r save_file`)
+![If you don't think this is cool, I can't help you.](images//poster.jpg)
 
 ***
 <br />

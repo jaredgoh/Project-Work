@@ -177,7 +177,7 @@ download.file(poster[1], destfile = save_file, method='curl')
 }
 ```
 
-![If you don't think this is cool, I can't help you.](C:/Users/P1320279/Desktop/Git Folder/Project-Work/.mini guides/Web Scraping/images/poster.jpg)
+![If you don't think this is cool, I can't help you.](images//poster.jpg)
 
 ***
 <br />
@@ -335,7 +335,7 @@ job_pg2 <-
 ```
 
 ```
-## Navigating to /j?l=singapore&p=2&q=data+scientist&sp=homepage&surl=0&tk=uFvvDwXk4XVF1ir8dBs8-uQC5Q3VcIsePKDKAEsvJ
+## Navigating to /j?l=singapore&p=2&q=data+scientist&sp=homepage&surl=0&tk=0_Q0Ylr8Q6X_YkbixtlG-GnM0gHAWvrTjPkXdFhMa
 ```
 
 ```r
