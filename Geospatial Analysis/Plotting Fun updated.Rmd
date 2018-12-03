@@ -3,6 +3,7 @@ title: "Plotting Milk Tea, GV-Cinema and Macdonalds locations"
 author: "JD"
 output:
   html_document:
+    keep_md: yes
     theme: cerulean
     code_folding: show
     toc: true
@@ -242,7 +243,7 @@ lat_long_data %>%
 
 ## Correcting Errors
 
-Thankfully, the google api is clever enough to guess the latitude and longitude values from the address string. Unfortunately, the api call function we created doesnt accomodate such strings. No worry, `geocode()` comes to the rescue.  
+Thankfully, the google api is clever enough to guess the latitude and longitude values from the address string. Unfortunately, the api call function we created doesnt accomodate such strings. No worry, `geocode()` comes to the rescue, automatically formats address strings for the google api.   
 
 
 ```{r}
@@ -280,11 +281,9 @@ kable(correcting_error) %>%
 ***
 <br />
 
-## Distance analysis 
+## Replotting and Distance analysis
 
-We then look into which tea shop, cinema or macdonalds is closest to the office. We used the haversine formula from the geosphere package to estimate direct line distance which offers a decent comparative guage. We also use the actual function `geocode()` which automatically formats address strings for the google api.
-
-The top 3 results by distance for each outlet does not surprise us. 
+We then look into which tea shop, cinema or macdonalds is closest to the office. We used the haversine formula from the geosphere package to estimate direct line distance which offers a decent comparative guage. 
 
 ```{r echo=TRUE}
 
@@ -301,6 +300,26 @@ distance_data <-
 
 write_csv(distance_data, "lat_long_data_correct.csv")
 
+```
+
+<br />
+
+A quick replot of the corrected data shows the errors have been fixed.  
+
+```{r, fig.width = 14, fig.height = 9, out.width = "2000", out.height = "500"}
+ggmap(map_singapore, extent = "device") +
+  geom_point(data = distance_data, aes(x = lng, y = lat, colour = indicator), size = 2, position = position_jitter(w = 0.002, h = 0.002)) +
+  scale_color_manual(breaks = c("Gong cha", "GV Cinema", "Koi", "Liho", "McDonalds"),
+                        values=c("darkred", "darkgreen", "darkblue", "darkgoldenrod4", "pink2")) +
+  geom_point(aes(x = 103.844185, y = 1.387563), shape = 18, size = 4, colour = 'red') +
+  annotate("text", x = 103.844185, y = 1.39, label = 'bold("NCS Hub")', size = 3.5, parse = TRUE)
+```
+
+<br />
+
+We then look at which top 3 tea shop, cinema and macdonalds are closest to the office. Naturally the results are not surprising. But its good to have verification.
+
+```{r}
 distance_data %>%
   group_by(indicator) %>% 
   arrange(distance) %>% 
@@ -308,6 +327,7 @@ distance_data %>%
   kable() %>%
   kable_styling()
 ```
+
 
 ***
 <br />

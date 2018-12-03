@@ -1,0 +1,229 @@
+---
+title: "Standard Rmd Note format"
+author: "JD"
+output:
+  html_document:
+    keep_md: yes
+    theme: cerulean
+    code_folding: show
+    toc: true
+    toc_depth: 4
+---
+
+<style type="text/css">
+.main-container{
+  max-width: 1300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+body, td{
+  font-family: Helvetica;
+  font-size: 16pt;
+}
+pre{ 
+  font-size: 14px; 
+}
+pre.r{ 
+  font-size: 14px;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(httr)
+library(rvest)
+
+```
+
+<br/>
+
+**References**  
+
+* https://github.com/yusuzech/r-web-scraping-cheat-sheet#rvest7.1  
+* https://blog.rstudio.com/2014/11/24/rvest-easy-web-scraping-with-r/  
+* https://stat4701.github.io/edav/2015/04/02/rvest_tutorial/  
+* https://www.analyticsvidhya.com/blog/2017/03/beginners-guide-on-web-scraping-in-r-using-rvest-with-hands-on-knowledge/  
+* https://rpubs.com/ryanthomas/webscraping-with-rvest  
+
+***
+<br />
+
+## Web Scraping The Lego Movie
+
+Web Scraping in R is essentially done with the package **rvest**. This guide will attempt to combine several other guides I have read into one. I also attempt to scrap serveral additional websites for practise.  
+We start by downloading and parsing the file for the **Lego Movie** with `read_html()`
+
+```{r}
+# downloading and parsing the file using read_html
+lego_movie <- read_html("http://www.imdb.com/title/tt1490017/")
+
+
+# Alternatively you can download the file directly as a .html file 
+#download.file("http://www.imdb.com/title/tt1490017/", 
+#               destfile = "lego_movie.html", mode = "wb")
+```
+
+<br />
+
+Opening the downloaded html file from my laptop, we see its an exact replica of the webpage.  
+[Downloaded html file](lego_movie.html)    
+What we now need is to somehow identify which section of the html page we need. This is done via an open source tool called selectorgadget.
+
+<br />
+
+<span style = "color:Maroon">***What is selectorgadget ?***</span>  
+In a nutshell [selectorgadget](https://selectorgadget.com/) generates what is called a CSS selector that matches the html element that we want. We then use this generated CSS selector to obtain the data via the following functions:  
+
+```{r}
+# excracting movie rating
+lego_movie %>%
+  html_node("strong span") %>%
+  html_text() %>%
+  as.numeric()
+```
+```{r}
+# extracting movie summary 
+lego_movie %>%
+  html_node(".summary_text") %>%
+  html_text()
+```
+```{r}
+# extracting the cast
+lego_movie %>%
+  html_nodes(".primary_photo+ td a") %>%
+  html_text()
+```
+
+<br />
+
+We use `html_node()` to find the first node that matches the selector, and extract its contents with `html_text()`. We can also use `html_nodes()` which finds all the nodes that match the selector:
+
+```{r}
+# extracting the movie reviews
+lego_movie_reviews <- read_html("https://www.imdb.com/title/tt1490017/reviews?ref_=tt_urv")
+
+# getting the all the nodes that match the "review" selector created
+lego_movie_reviews %>%
+  html_nodes(".text")
+```
+
+<br />
+
+As we can see from above, `html_nodes()` only returns the list of nodes that match the css selector used. We must then extract the information we want from the nodes using additional functions.  
+
+Naturally we are not limited to just extracting text. Through some clever manipulation, we can scrape images easily as well.
+
+```{r}
+# identifies the url of the movie poster
+poster <- lego_movie %>%
+  html_nodes("#title-overview-widget img") %>%
+  html_attr("src")
+poster
+
+# downloads the movie poster jpg from the url
+save_file <- file.path(getwd(),"images","poster.jpg")
+
+if(!file.exists(save_file)) {
+download.file(poster[1], destfile = save_file, method='curl')
+}
+```
+
+![If you don't think this is cool, I can't help you.](`r save_file`)
+
+***
+<br />
+
+
+## Scraping job postings
+
+Finally a quick example of dealing with a common problem. Sometimes when scraping different elements, you will get inconsistent results. This may be due to data that was not inputted or missing.  
+
+The code chunk bellow shows how I dealt with that issue when scraping job postings from jobsDB. I got the job title, company and summary description and formatted it into a table.
+
+```{r}
+# setting url and reading html
+url_link <- "https://sg.jobsdb.com/j?q=data+scientist&l=singapore&sp=homepage" 
+  
+job_pg1 <- read_html(url_link)
+  
+# function used
+getting_data <- function(nodes, css_selector) {
+  nodes %>%
+    html_nodes(css_selector) %>%
+    html_text() %>%
+    {
+      ifelse (is_empty(.), '-', .)
+    }
+}
+
+# scraping interested info
+job_title <- 
+  job_pg1 %>%
+  html_nodes(".result") %>%
+  map(getting_data, ".jobtitle") %>%
+  flatten_chr()
+
+job_company <-
+  job_pg1 %>%
+  html_nodes(".result")  %>%
+  map(getting_data, ".company") %>%
+  flatten_chr()
+
+job_summary <-
+  job_pg1 %>%
+  html_nodes(".result") %>%
+  map(getting_data, ".summary") %>%
+  flatten_chr()
+
+# formatting output
+output <- data.frame(title = job_title, company = job_company, summary = job_summary)
+knitr::kable(output)
+```
+
+<br />
+
+<span style = "color:Black">***We can also navigate to different pages***</span>  
+You can see how it is possible to design a crawler that will look for the pages interested in and then scrape them. 
+
+```{r}
+# opens html session so enable navigation
+open_session <- html_session(url_link)
+
+# reads html for pg2
+job_pg2 <- 
+  open_session %>%
+  follow_link("Next") %>%
+  read_html()
+
+# scraping interested info  
+job_title <- 
+  job_pg2 %>%
+  html_nodes(".result") %>%
+  map(getting_data, ".jobtitle") %>%
+  flatten_chr()
+
+job_company <-
+  job_pg2 %>%
+  html_nodes(".result")  %>%
+  map(getting_data, ".company") %>%
+  flatten_chr()
+
+job_summary <-
+  job_pg2 %>%
+  html_nodes(".result") %>%
+  map(getting_data, ".summary") %>%
+  flatten_chr()
+
+# formatting output
+output <- data.frame(title = job_title, company = job_company, summary = job_summary)
+knitr::kable(output)
+```
+
+***
+<br />
+
+## Parting notes
+
+Rvest is just the beginning. There are many problems that occur when scraping websites and there are more comprehensive guides which detail them in the references.  
+I wrote this mainly to practise as I learned and to compile all the good notes other people have made into one location for my reference. 
