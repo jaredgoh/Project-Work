@@ -34,7 +34,6 @@ library(tidyverse)
 library(httr)
 library(rvest)
 library(kableExtra)
-
 ```
 
 <br/>
